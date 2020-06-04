@@ -141,7 +141,7 @@ pub struct FullType {
 #[serde(rename_all = "camelCase")]
 pub struct FullTypeFieldsArgs {
     #[serde(flatten)]
-    input_value: InputValue,
+    pub input_value: InputValue,
 }
 
 #[derive(Clone, Debug, Deserialize)]

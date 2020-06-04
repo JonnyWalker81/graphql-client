@@ -10,7 +10,7 @@ use std::collections::BTreeSet;
 ///
 /// For code generation purposes, unions will "flatten" fragment spreads, so there is only one enum for the selection. See the tests in the graphql_client crate for examples.
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) struct GqlUnion<'schema> {
+pub struct GqlUnion<'schema> {
     pub name: &'schema str,
     pub description: Option<&'schema str>,
     pub variants: BTreeSet<&'schema str>,
@@ -36,7 +36,7 @@ type UnionVariantResult<'selection> =
 /// - The first element is the union variants to be inserted directly into the `enum` declaration.
 /// - The second is the structs for each variant's sub-selection
 /// - The last one contains which fields have been selected on the union, so we can make the enum exhaustive by complementing with those missing.
-pub(crate) fn union_variants<'selection>(
+pub fn union_variants<'selection>(
     selection: &'selection Selection<'_>,
     context: &'selection QueryContext<'selection, 'selection>,
     prefix: &str,
@@ -93,7 +93,7 @@ pub(crate) fn union_variants<'selection>(
 
 impl<'schema> GqlUnion<'schema> {
     /// Returns the code to deserialize this union in the response given the query selection.
-    pub(crate) fn response_for_selection(
+    pub fn response_for_selection(
         &self,
         query_context: &QueryContext<'_, '_>,
         selection: &Selection<'_>,
@@ -195,12 +195,14 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: "firstName",
+                        args: vec![],
                         type_: FieldType::new("String").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "lastName",
+                        args: vec![],
                         type_: FieldType::new("String").nonnull(),
 
                         deprecation: DeprecationStatus::Current,
@@ -208,6 +210,7 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: "createdAt",
+                        args: vec![],
                         type_: FieldType::new("Date").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
@@ -225,12 +228,14 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: "title",
+                        args: vec![],
                         type_: FieldType::new("String").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "created_at",
+                        args: vec![],
                         type_: FieldType::new("Date").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
@@ -303,24 +308,28 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: "__typename",
+                        args: vec![],
                         type_: FieldType::new(string_type()).nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "firstName",
+                        args: vec![],
                         type_: FieldType::new(string_type()).nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "lastName",
+                        args: vec![],
                         type_: FieldType::new(string_type()).nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "createdAt",
+                        args: vec![],
                         type_: FieldType::new("Date").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
@@ -338,18 +347,21 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: "__typename",
+                        args: vec![],
                         type_: FieldType::new(string_type()).nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "title",
+                        args: vec![],
                         type_: FieldType::new("String").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "createdAt",
+                        args: vec![],
                         type_: FieldType::new("Date").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
@@ -426,6 +438,7 @@ mod tests {
                 fields: vec![GqlObjectField {
                     description: None,
                     name: "field",
+                    args: vec![],
                     type_: FieldType::new(string_type()),
                     deprecation: DeprecationStatus::Current,
                 }],

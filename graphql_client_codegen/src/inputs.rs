@@ -123,6 +123,7 @@ impl<'schema> std::convert::From<&'schema graphql_parser::schema::InputObjectTyp
                     let field = GqlObjectField {
                         description: None,
                         name: &field.name,
+                        args: vec![],
                         type_: crate::field_type::FieldType::from(&field.value_type),
                         deprecation: DeprecationStatus::Current,
                     };
@@ -155,6 +156,7 @@ impl<'schema> std::convert::From<&'schema introspection_response::FullType> for 
                     let field = GqlObjectField {
                         description: None,
                         name: &name,
+                        args: vec![],
                         type_: f
                             .input_value
                             .type_
@@ -188,6 +190,7 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: "pawsCount",
+                        args: vec![],
                         type_: FieldType::new(float_type()).nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
@@ -197,6 +200,7 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: "offsprings",
+                        args: vec![],
                         type_: FieldType::new("Cat").nonnull().list().nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
@@ -206,6 +210,7 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: "requirements",
+                        args: vec![],
                         type_: FieldType::new("CatRequirements"),
                         deprecation: DeprecationStatus::Current,
                     },

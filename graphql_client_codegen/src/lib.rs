@@ -1,5 +1,5 @@
 #![recursion_limit = "128"]
-#![deny(missing_docs)]
+// #![deny(missing_docs)]
 #![warn(rust_2018_idioms)]
 
 //! Crate for internal use by other graphql-client crates, for code generation.
@@ -19,22 +19,22 @@ mod query;
 /// Contains the [Schema] type and its implementation.
 pub mod schema;
 
-mod constants;
-mod enums;
-mod field_type;
-mod fragments;
-mod generated_module;
-mod inputs;
-mod interfaces;
-/// Normalization-related code
+pub mod constants;
+pub mod enums;
+pub mod field_type;
+pub mod fragments;
+pub mod generated_module;
+pub mod inputs;
+pub mod interfaces;
+/// normalization-related code
 pub mod normalization;
-mod objects;
-mod operations;
-mod scalars;
-mod selection;
-mod shared;
-mod unions;
-mod variables;
+pub mod objects;
+pub mod operations;
+pub mod scalars;
+pub mod selection;
+pub mod shared;
+pub mod unions;
+pub mod variables;
 
 #[cfg(test)]
 mod tests;

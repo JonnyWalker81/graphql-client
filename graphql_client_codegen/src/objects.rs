@@ -22,8 +22,17 @@ pub struct GqlObject<'schema> {
 pub struct GqlObjectField<'schema> {
     pub description: Option<&'schema str>,
     pub name: &'schema str,
+    pub args: Vec<GqlFieldArg<'schema>>,
     pub type_: FieldType<'schema>,
     pub deprecation: DeprecationStatus,
+}
+
+#[derive(Clone, Debug, PartialEq, Hash)]
+pub struct GqlFieldArg<'schema> {
+    pub description: Option<&'schema str>,
+    pub name: &'schema str,
+    pub type_: FieldType<'schema>,
+    pub default_value: String,
 }
 
 fn parse_deprecation_info(field: &schema::Field) -> DeprecationStatus {
@@ -68,6 +77,7 @@ impl<'schema> GqlObject<'schema> {
             GqlObjectField {
                 description: f.description.as_deref(),
                 name: &f.name,
+                args: vec![],
                 type_: FieldType::from(&f.field_type),
                 deprecation,
             }
@@ -87,9 +97,32 @@ impl<'schema> GqlObject<'schema> {
                 } else {
                     DeprecationStatus::Current
                 };
+
+                let args: Vec<GqlFieldArg<'schema>> = t
+                    .args
+                    .as_ref()
+                    .unwrap()
+                    .iter()
+                    .filter_map(|a| {
+                        a.as_ref().map(|arg| GqlFieldArg {
+                            description: arg.input_value.description.as_deref(),
+                            name: arg.input_value.name.as_ref().expect("arg name"),
+                            type_: FieldType::from(
+                                arg.input_value.type_.as_ref().expect("arg type"),
+                            ),
+                            default_value: arg
+                                .input_value
+                                .default_value
+                                .as_ref()
+                                .unwrap_or(&String::new())
+                                .clone(),
+                        })
+                    })
+                    .collect();
                 GqlObjectField {
                     description: t.description.as_deref(),
                     name: t.name.as_ref().expect("field name"),
+                    args: args,
                     type_: FieldType::from(t.type_.as_ref().expect("field type")),
                     deprecation,
                 }

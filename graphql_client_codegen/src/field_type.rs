@@ -6,7 +6,7 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
 #[derive(Clone, Debug, PartialEq, Hash)]
-enum GraphqlTypeQualifier {
+pub enum GraphqlTypeQualifier {
     Required,
     List,
 }
@@ -16,12 +16,12 @@ pub struct FieldType<'a> {
     /// The type name of the field.
     ///
     /// e.g. for `[Int]!`, this would return `Int`.
-    name: &'a str,
+    pub name: &'a str,
     /// An ordered list of qualifiers, from outer to inner.
     ///
     /// e.g. `[Int]!` would have `vec![List, Optional]`, but `[Int!]` would have `vec![Optional,
     /// List]`.
-    qualifiers: Vec<GraphqlTypeQualifier>,
+    pub qualifiers: Vec<GraphqlTypeQualifier>,
 }
 
 impl<'a> FieldType<'a> {

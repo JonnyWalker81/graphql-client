@@ -14,20 +14,20 @@ pub(crate) const DEFAULT_SCALARS: &[&str] = &["ID", "String", "Int", "Float", "B
 
 /// Intermediate representation for a parsed GraphQL schema used during code generation.
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) struct Schema<'schema> {
-    pub(crate) enums: BTreeMap<&'schema str, GqlEnum<'schema>>,
-    pub(crate) inputs: BTreeMap<&'schema str, GqlInput<'schema>>,
-    pub(crate) interfaces: BTreeMap<&'schema str, GqlInterface<'schema>>,
-    pub(crate) objects: BTreeMap<&'schema str, GqlObject<'schema>>,
-    pub(crate) scalars: BTreeMap<&'schema str, Scalar<'schema>>,
-    pub(crate) unions: BTreeMap<&'schema str, GqlUnion<'schema>>,
-    pub(crate) query_type: Option<&'schema str>,
-    pub(crate) mutation_type: Option<&'schema str>,
-    pub(crate) subscription_type: Option<&'schema str>,
+pub struct Schema<'schema> {
+    pub enums: BTreeMap<&'schema str, GqlEnum<'schema>>,
+    pub inputs: BTreeMap<&'schema str, GqlInput<'schema>>,
+    pub interfaces: BTreeMap<&'schema str, GqlInterface<'schema>>,
+    pub objects: BTreeMap<&'schema str, GqlObject<'schema>>,
+    pub scalars: BTreeMap<&'schema str, Scalar<'schema>>,
+    pub unions: BTreeMap<&'schema str, GqlUnion<'schema>>,
+    pub query_type: Option<&'schema str>,
+    pub mutation_type: Option<&'schema str>,
+    pub subscription_type: Option<&'schema str>,
 }
 
 impl<'schema> Schema<'schema> {
-    pub(crate) fn new() -> Schema<'schema> {
+    pub fn new() -> Schema<'schema> {
         Schema {
             enums: BTreeMap::new(),
             inputs: BTreeMap::new(),
@@ -178,6 +178,7 @@ impl<'schema> std::convert::From<&'schema graphql_parser::schema::Document> for 
                             .extend(interface.fields.iter().map(|f| GqlObjectField {
                                 description: f.description.as_deref(),
                                 name: f.name.as_str(),
+                                args: vec![],
                                 type_: FieldType::from(&f.field_type),
                                 deprecation: DeprecationStatus::Current,
                             }));
@@ -334,6 +335,7 @@ impl<'schema>
                             .map(|f| GqlObjectField {
                                 description: f.description.as_deref(),
                                 name: f.name.as_ref().expect("field name").as_str(),
+                                args: vec![],
                                 type_: FieldType::from(f.type_.as_ref().expect("field type")),
                                 deprecation: DeprecationStatus::Current,
                             }),
@@ -388,42 +390,49 @@ mod tests {
                     GqlObjectField {
                         description: None,
                         name: TYPENAME_FIELD,
+                        args: vec![],
                         type_: FieldType::new(string_type()),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "id",
+                        args: vec![],
                         type_: FieldType::new("ID").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "name",
+                        args: vec![],
                         type_: FieldType::new("String").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "friends",
+                        args: vec![],
                         type_: FieldType::new("Character").list(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "friendsConnection",
+                        args: vec![],
                         type_: FieldType::new("FriendsConnection").nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "appearsIn",
+                        args: vec![],
                         type_: FieldType::new("Episode").list().nonnull(),
                         deprecation: DeprecationStatus::Current,
                     },
                     GqlObjectField {
                         description: None,
                         name: "primaryFunction",
+                        args: vec![],
                         type_: FieldType::new("String"),
                         deprecation: DeprecationStatus::Current,
                     },

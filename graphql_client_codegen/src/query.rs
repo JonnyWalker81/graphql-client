@@ -11,7 +11,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use syn::Ident;
 
 /// This holds all the information we need during the code generation phase.
-pub(crate) struct QueryContext<'query, 'schema: 'query> {
+pub struct QueryContext<'query, 'schema: 'query> {
     pub fragments: BTreeMap<&'query str, GqlFragment<'query>>,
     pub schema: &'schema Schema<'schema>,
     pub deprecation_strategy: DeprecationStrategy,
@@ -22,7 +22,7 @@ pub(crate) struct QueryContext<'query, 'schema: 'query> {
 
 impl<'query, 'schema> QueryContext<'query, 'schema> {
     /// Create a QueryContext with the given Schema.
-    pub(crate) fn new(
+    pub fn new(
         schema: &'schema Schema<'schema>,
         deprecation_strategy: DeprecationStrategy,
         normalization: Normalization,
@@ -38,7 +38,7 @@ impl<'query, 'schema> QueryContext<'query, 'schema> {
     }
 
     /// Mark a fragment as required, so code is actually generated for it.
-    pub(crate) fn require_fragment(&self, typename_: &str) {
+    pub fn require_fragment(&self, typename_: &str) {
         if let Some(fragment) = self.fragments.get(typename_) {
             fragment.require(&self);
         }
@@ -46,7 +46,7 @@ impl<'query, 'schema> QueryContext<'query, 'schema> {
 
     /// For testing only. creates an empty QueryContext with an empty Schema.
     #[cfg(test)]
-    pub(crate) fn new_empty(schema: &'schema Schema<'_>) -> QueryContext<'query, 'schema> {
+    pub fn new_empty(schema: &'schema Schema<'_>) -> QueryContext<'query, 'schema> {
         QueryContext {
             fragments: BTreeMap::new(),
             schema,
@@ -58,7 +58,7 @@ impl<'query, 'schema> QueryContext<'query, 'schema> {
     }
 
     /// Expand the deserialization data structures for the given field.
-    pub(crate) fn maybe_expand_field(
+    pub fn maybe_expand_field(
         &self,
         ty: &str,
         selection: &Selection<'_>,
@@ -87,10 +87,7 @@ impl<'query, 'schema> QueryContext<'query, 'schema> {
         }
     }
 
-    pub(crate) fn ingest_response_derives(
-        &mut self,
-        attribute_value: &str,
-    ) -> Result<(), failure::Error> {
+    pub fn ingest_response_derives(&mut self, attribute_value: &str) -> Result<(), failure::Error> {
         if self.response_derives.len() > 1 {
             return Err(format_err!(
                 "ingest_response_derives should only be called once"
@@ -106,7 +103,7 @@ impl<'query, 'schema> QueryContext<'query, 'schema> {
         Ok(())
     }
 
-    pub(crate) fn ingest_variables_derives(
+    pub fn ingest_variables_derives(
         &mut self,
         attribute_value: &str,
     ) -> Result<(), failure::Error> {
@@ -125,7 +122,7 @@ impl<'query, 'schema> QueryContext<'query, 'schema> {
         Ok(())
     }
 
-    pub(crate) fn variables_derives(&self) -> TokenStream {
+    pub fn variables_derives(&self) -> TokenStream {
         let derives: BTreeSet<&Ident> = self.variables_derives.iter().collect();
         let derives = derives.iter();
 
@@ -134,7 +131,7 @@ impl<'query, 'schema> QueryContext<'query, 'schema> {
         }
     }
 
-    pub(crate) fn response_derives(&self) -> TokenStream {
+    pub fn response_derives(&self) -> TokenStream {
         let derives: BTreeSet<&Ident> = self.response_derives.iter().collect();
         let derives = derives.iter();
         quote! {
@@ -142,7 +139,7 @@ impl<'query, 'schema> QueryContext<'query, 'schema> {
         }
     }
 
-    pub(crate) fn response_enum_derives(&self) -> TokenStream {
+    pub fn response_enum_derives(&self) -> TokenStream {
         let always_derives = [
             Ident::new("Eq", Span::call_site()),
             Ident::new("PartialEq", Span::call_site()),

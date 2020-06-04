@@ -5,14 +5,14 @@ use std::cell::Cell;
 
 /// Represents which type a fragment is defined on. This is the type mentioned in the fragment's `on` clause.
 #[derive(Debug, PartialEq)]
-pub(crate) enum FragmentTarget<'context> {
+pub enum FragmentTarget<'context> {
     Object(&'context crate::objects::GqlObject<'context>),
     Interface(&'context crate::interfaces::GqlInterface<'context>),
     Union(&'context crate::unions::GqlUnion<'context>),
 }
 
 impl<'context> FragmentTarget<'context> {
-    pub(crate) fn name(&self) -> &str {
+    pub fn name(&self) -> &str {
         match self {
             FragmentTarget::Object(obj) => obj.name,
             FragmentTarget::Interface(iface) => iface.name,
@@ -23,7 +23,7 @@ impl<'context> FragmentTarget<'context> {
 
 /// Represents a fragment extracted from a query document.
 #[derive(Debug, PartialEq)]
-pub(crate) struct GqlFragment<'query> {
+pub struct GqlFragment<'query> {
     /// The name of the fragment, matching one-to-one with the name in the GraphQL query document.
     pub name: &'query str,
     /// The `on` clause of the fragment.
@@ -36,10 +36,7 @@ pub(crate) struct GqlFragment<'query> {
 
 impl<'query> GqlFragment<'query> {
     /// Generate all the Rust code required by the fragment's object selection.
-    pub(crate) fn to_rust(
-        &self,
-        context: &QueryContext<'_, '_>,
-    ) -> Result<TokenStream, failure::Error> {
+    pub fn to_rust(&self, context: &QueryContext<'_, '_>) -> Result<TokenStream, failure::Error> {
         match self.on {
             FragmentTarget::Object(obj) => {
                 obj.response_for_selection(context, &self.selection, &self.name)
@@ -53,11 +50,11 @@ impl<'query> GqlFragment<'query> {
         }
     }
 
-    pub(crate) fn is_recursive(&self) -> bool {
+    pub fn is_recursive(&self) -> bool {
         self.selection.contains_fragment(&self.name)
     }
 
-    pub(crate) fn require<'schema>(&self, context: &QueryContext<'query, 'schema>) {
+    pub fn require<'schema>(&self, context: &QueryContext<'query, 'schema>) {
         self.is_required.set(true);
         self.selection.require_items(context);
     }
